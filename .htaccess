@@ -1,0 +1,28 @@
+Options +FollowSymLinks -MultiViews
+RewriteEngine On
+RewriteBase /bca/
+
+# Enable error pages
+ErrorDocument 404 /bca/404.php
+ErrorDocument 500 /bca/error.php
+
+# Correctly handle PHP files
+<FilesMatch "\.php$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+
+# If the file or directory exists, serve it directly
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Handle admin routing
+RewriteRule ^admin$ admin/index.php [L]
+RewriteRule ^admin/$ admin/index.php [L]
+
+# For all other requests, check if it's a PHP file without extension
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+# Set directory index
+DirectoryIndex index.php 
